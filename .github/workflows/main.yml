@@ -53,8 +53,5 @@ jobs:
             source venv/bin/activate
             pip install -r requirements.txt
             sudo systemctl restart myapp
-            # Additional steps for configuring the Flask app and starting it
             # Test the deployment
-            curl http://localhost:50000  # Replace with your server IP and Flask app port
-
-            ls -al
+            curl http://localhost:5000  # Replace with your server IP and Flask app port
