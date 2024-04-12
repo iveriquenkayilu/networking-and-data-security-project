@@ -38,20 +38,5 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}  # SSH username
           TARGET: "/var/www/html/myapp"  # Target directory on the remote server
           EXCLUDE: "/.git/, /.github/, /venv/, /__pycache__/"  # Exclude specific directories
-          SCRIPT_BEFORE: |
-            echo "Preparing deployment..."
-            ls -al
-          SCRIPT: |
+          SCRIPT_AFTER: |
             echo "Deployment complete."
-            ls -al
-            # Manually deploy a Flask application steps
-            sudo apt update
-            sudo apt install python3 python3-pip
-            sudo apt install python3-venv
-            cd /var/www/html/myapp
-            python3 -m venv venv
-            source venv/bin/activate
-            pip install -r requirements.txt
-            sudo systemctl restart myapp
-            # Test the deployment
-            curl http://localhost:5000  # Replace with your server IP and Flask app port
