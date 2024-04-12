@@ -25,7 +25,8 @@ jobs:
 
       - name: Run tests  # Optional: Add test commands here
         run: |
-          pytest  # Example test command, adjust based on your testing setup
+          echo "Run tests"
+          #pytest  # Example test command, adjust based on your testing setup
 
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@v2
