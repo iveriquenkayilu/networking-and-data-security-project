@@ -41,7 +41,7 @@ jobs:
           SCRIPT_BEFORE: |
             echo "Preparing deployment..."
             ls -al
-          SCRIPT_AFTER: |
+          SCRIPT: |
             echo "Deployment complete."
             ls -al
             # Manually deploy a Flask application steps
