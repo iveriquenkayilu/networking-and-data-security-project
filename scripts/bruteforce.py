@@ -1,5 +1,6 @@
 import paramiko
 
+
 def ssh_login(hostname, username, password):
     try:
         client = paramiko.SSHClient()
@@ -15,6 +16,7 @@ def ssh_login(hostname, username, password):
         print(f"Error: {e}")
         return False
 
+
 def main():
     hostname = input("Enter the hostname or IP address: ")
     usernames = ['user1', 'user2', 'root']  # Add your list of usernames here
@@ -26,6 +28,7 @@ def main():
                 return  # Exit the program if login successful
 
     print("Failed to find valid credentials")
+
 
 if __name__ == "__main__":
     main()
