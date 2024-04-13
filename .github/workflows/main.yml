@@ -57,3 +57,8 @@ jobs:
             sudo systemctl status myapp
             echo "Test the deployment"
             curl -i -k https://security.iverique.com  # Replace with your server IP and Flask app port
+            echo "Setting up environment for scripts"
+            cd scripts
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
