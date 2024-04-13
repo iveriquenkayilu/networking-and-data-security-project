@@ -38,6 +38,9 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}  # SSH username
           TARGET: "/var/www/html/myapp"  # Target directory on the remote server
           EXCLUDE: "/.git/, /.github/, /venv/, /__pycache__/"  # Exclude specific directories
+          SCRIPT_BEFORE: |
+            whoami
+            echo "Before running the deployment"
           SCRIPT_AFTER: |
             echo "Deployment complete."
             ls -al
@@ -49,6 +52,8 @@ jobs:
             python3 -m venv venv
             source venv/bin/activate
             pip install -r requirements.txt
-            sudo systemctl restart myapp
-            # Test the deployment
-            curl http://localhost:5000  # Replace with your server IP and Flask app port
+            echo "Restarting MyApp Service"
+            sudo systemctl restart myapp && echo "Application is running"
+            sudo systemctl status myapp
+            echo "Test the deployment"
+            curl -i -k https://security.iverique.com  # Replace with your server IP and Flask app port
