@@ -8,6 +8,8 @@ from wtforms.validators import DataRequired, Length, EqualTo
 from wtforms.fields.simple import StringField
 from wtforms.validators import DataRequired
 import os
+from flask_cors import CORS
+
 
 # Generate a random 32-byte (256-bit) key
 secret_key = os.urandom(32)
@@ -19,6 +21,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SECRET_KEY'] = secret_key
 csrf = CSRFProtect(app)
+CORS(app, supports_credentials=True)
+
 
 
 db = SQLAlchemy(app)
@@ -190,3 +194,6 @@ if __name__ == '__main__':
 
         db.create_all()
     app.run(debug=True)
+    # app.run(port=8080)
+    #app.run(port=5001, host='127.0.0.1')
+

@@ -5,3 +5,4 @@ Flask~=3.0.3
 Werkzeug~=3.0.2
 WTForms~=3.1.2
 Flask-WTF
+flask-cors>=3.0.10
