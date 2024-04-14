@@ -1,2 +1,4 @@
 Flask-SQLAlchemy>=2.5.0
+
 Flask-WTF
+flask-cors>=3.0.10
