@@ -41,6 +41,8 @@ jobs:
           SCRIPT_BEFORE: |
             whoami
             echo "Before running the deployment"
+            echo "Deleting files"
+            rm -r /var/www/html/myapp/*
           SCRIPT_AFTER: |
             echo "Deployment complete."
             ls -al
@@ -48,7 +50,6 @@ jobs:
             sudo apt update -y
             sudo apt install -y python3 python3-pip
             sudo apt install -y python3-venv
-            rm -r /var/www/html/myapp/*
             cd /var/www/html/myapp
             python3 -m venv venv
             source venv/bin/activate
