@@ -1,14 +1,26 @@
-from flask import Flask, request, jsonify, render_template, redirect, session, url_for
+from flask import Flask, request, jsonify, render_template, redirect, session, url_for, flash
+from flask_wtf import FlaskForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Length, EqualTo
+from wtforms.fields.simple import StringField
+from wtforms.validators import DataRequired
+import os
 
+# Generate a random 32-byte (256-bit) key
+secret_key = os.urandom(32)
 # from models import User
 # from .user import User
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = secret_key
+csrf = CSRFProtect(app)
+
+
 db = SQLAlchemy(app)
 
 # Sample data - you can replace this with your own data source
@@ -53,25 +65,92 @@ def create_post():
 @app.route('/')
 def home():
     return render_template('index.html')
+#
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+#         hashed_password = generate_password_hash(password)
+#
+#         new_user = User(username=username, password=hashed_password)
+#         db.session.add(new_user)
+#         db.session.commit()
+#
+#         return redirect(url_for('login'))
+#
+#     return render_template('signup.html')
 
+class SignupForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=50)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')
+
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     form = SignupForm()
+#     if form.validate_on_submit():
+#         username = form.username.data
+#         password = form.password.data
+#         hashed_password = generate_password_hash(password)
+#
+#         new_user = User(username=username, password=hashed_password)
+#         db.session.add(new_user)
+#         db.session.commit()
+#         flash('Account created successfully! Please log in.')
+#
+#         return redirect(url_for('login'))
+#     else:
+#         # Form validation failed
+#         print(form.errors)  # Print form validation errors to console for debugging
+#         flash('Form validation failed. Please check your inputs.')
+#
+#     return render_template('signup.html', form=form)
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    form = SignupForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        confirm_password = form.confirm_password.data
+
+        # Check if the password matches the confirm password
+        if password != confirm_password:
+            flash('Passwords do not match. Please try again.')
+            return render_template('signup.html', form=form)
+
         hashed_password = generate_password_hash(password)
 
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
+        flash('Account created successfully! Please log in.')
 
         return redirect(url_for('login'))
 
-    return render_template('signup.html')
+    return render_template('signup.html', form=form)
+
+
+@app.route('/login-unsafe', methods=['GET', 'POST'])
+def loginunsafe():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        user = User.query.filter_by(username=username).first()
+
+        if user and check_password_hash(user.password, password):
+            session['username'] = username
+            return redirect(url_for('dashboard'))
+
+        return render_template('login.html', error='Invalid username or password')
+
+    return render_template('login.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
+    if request.method == 'POST' and 'csrf_token' in request.form:
         username = request.form['username']
         password = request.form['password']
 
@@ -95,6 +174,16 @@ def dashboard():
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
+
+@app.route('/csrf-attack-prone-login')
+def csrf_attack():
+    # Render the CSRF attack HTML page
+    return render_template('csrf_attack_login.html')
+
+@app.route('/csrf-attack-safe-signup')
+def csrf_attack_signup():
+    # Render the CSRF attack HTML page
+    return render_template('csrf_attack_signup.html')
 
 if __name__ == '__main__':
     with app.app_context():
