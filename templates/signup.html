@@ -1,3 +1,55 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Sign Up</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Sign Up</h2>-->
+<!--<form method="POST" action="/signup">-->
+<!--    <label for="username">Username:</label><br>-->
+<!--    <input type="text" id="username" name="username" required><br>-->
+<!--    <label for="password">Password:</label><br>-->
+<!--    <input type="password" id="password" name="password" required><br>-->
+<!--    <input type="submit" value="Sign Up">-->
+<!--</form>-->
+<!--</body>-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Sign Up Now</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Sign Up Now</h2>-->
+<!--{% with messages = get_flashed_messages() %}-->
+<!--    {% if messages %}-->
+<!--        <ul>-->
+<!--            {% for message in messages %}-->
+<!--                <li>{{ message }}</li>-->
+<!--            {% endfor %}-->
+<!--        </ul>-->
+<!--    {% endif %}-->
+<!--{% endwith %}-->
+<!--<form method="POST" action="/signup">-->
+<!--    {{ form.csrf_token }}-->
+<!--    <label for="username">Username:</label><br>-->
+<!--    {{ form.username(class="form-control", required=true) }}<br>-->
+<!--    {% for error in form.username.errors %}-->
+<!--        <span style="color: red;">{{ error }}</span><br>-->
+<!--    {% endfor %}-->
+<!--    <label for="password">Password:</label><br>-->
+<!--    {{ form.password(class="form-control", required=true) }}<br>-->
+<!--    {% for error in form.password.errors %}-->
+<!--        <span style="color: red;">{{ error }}</span><br>-->
+<!--    {% endfor %}-->
+<!--    <input type="submit" value="Sign Up">-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,11 +60,15 @@
 <body>
 <h2>Sign Up</h2>
 <form method="POST" action="/signup">
+    {{ form.hidden_tag() }}  <!-- Include CSRF token -->
     <label for="username">Username:</label><br>
-    <input type="text" id="username" name="username" required><br>
+    {{ form.username(size=20) }}<br>
     <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br>
+    {{ form.password(size=20) }}<br>
+    <label for="confirm_password">Confirm Password:</label><br>
+    {{ form.confirm_password(size=20) }}<br>
     <input type="submit" value="Sign Up">
 </form>
 </body>
 </html>
+
